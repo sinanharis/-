@@ -1,43 +1,42 @@
 <?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Collect form data
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $subject = $_POST['subject'];
+    $message = $_POST['message'];
 
-    $EmailFrom = "email@example.com"; // The from address
-    $EmailTo = "yourmail@example.com"; // The recipient address (your own email address)
-    $Subject = "Contact form subject"; // Shows as your email subject, change this for your own purposes
-    $Name = Trim(stripslashes($_POST['Name'])); 
-    $Tel = Trim(stripslashes($_POST['Tel'])); 
-    $Email = Trim(stripslashes($_POST['Email']));
-    $Message = Trim(stripslashes($_POST['Message'])); 
+    // Set up the recipient email address
+    $to = "technokicks2020@gmail.com"; // Replace with your actual email address
 
-// validation
-$validationOK=true;
-if (!$validationOK) {
-  print "<meta http-equiv=\"refresh\" content=\"0;URL=error.htm\">";
-  exit;
-}
+    // Set up email headers
+    $headers = "From: $email\r\n";
+    $headers .= "Reply-To: $email\r\n";
+    $headers .= "Content-type: text/html\r\n";
 
-// prepare email body text
-$Body = "";
-$Body .= "Name: ";
-$Body .= $Name;
-$Body .= "\n";
-$Body .= "Tel: ";
-$Body .= $Tel;
-$Body .= "\n";
-$Body .= "Email: ";
-$Body .= $Email;
-$Body .= "\n";
-$Body .= "Message: ";
-$Body .= $Message;
-$Body .= "\n";
+    // Compose the email message
+    $email_message = "
+        <html>
+        <head>
+            <title>Contact Form Submission</title>
+        </head>
+        <body>
+            <h2>Contact Form Submission</h2>
+            <p><strong>Name:</strong> $name</p>
+            <p><strong>Email:</strong> $email</p>
+            <p><strong>Subject:</strong> $subject</p>
+            <p><strong>Message:</strong> $message</p>
+        </body>
+        </html>
+    ";
 
-// send email
-$success = mail($EmailTo, $Subject, $Body, "From: <$EmailFrom>");
+    // Send the email
+    mail($to, $subject, $email_message, $headers);
 
-// redirect to success page 
-if ($success){
-  print "<meta http-equiv=\"refresh\" content=\"0;URL=//".$_SERVER['SERVER_NAME']."/pages/thank-you.html\">";
-}
-else{
-  print "<meta http-equiv=\"refresh\" content=\"0;URL=//".$_SERVER['SERVER_NAME']."/pages/error.html\">";
+    // Redirect to a thank you page
+    header("Location: thank_you.html");
+} else {
+    // Handle the case when the form is not submitted
+    echo "Error: Form not submitted.";
 }
 ?>
